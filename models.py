@@ -176,6 +176,10 @@ def create_hierarchical_containment_model(n_input_hops, n_filters, n_hidden_unit
 
 
 def partition(n, prop_list):
+    """
+        distribute/partition n elements to len(prop_list) number of slots correlated to
+        corresponding probabilities stored in prob_list
+    """
     prop_list = np.array(prop_list, dtype='float32')
     ideal_part = n * prop_list
     round_part = ideal_part.astype(int)
@@ -276,12 +280,20 @@ def create_taxonet_model(n_input_hops, n_filters, n_hidden_units, kernel_size, p
     # Layer 4
     coarse_layer = keras.layers.Flatten()(conv3)
 
+    # why do we divide it by 43 ?
     wd = base_wd / 43.0
+
+    # single output because coarse layer has only single taxa/class which is
+    # Passeriforme in the original data
     y_coarse = keras.layers.Dense(1,
                                   kernel_initializer="normal", activation="sigmoid",
                                   kernel_regularizer=keras.regularizers.l2(wd),
                                   use_bias=False,
                                   name="y_coarse")(coarse_layer)
+
+    # medium_children_counts: number of sub-taxa in the next layer
+    # class_sublayer_sizes: number of neurons on the next layer correlated with
+    # medium_children_counts
 
     # Don't include other
     num_medium_classes = len(annotations.MOD_MEDIUM_COUNTS)
@@ -290,10 +302,14 @@ def create_taxonet_model(n_input_hops, n_filters, n_hidden_units, kernel_size, p
         medium_idx = annotations.MOD_MEDIUM_IDXS[medium_code]
         medium_children_counts[medium_idx] = int(medium_count - 1)
 
+    # partition neurons correlated with number of childrens of the taxa, (paper
+    # says this number is only children not grandchildren etc included)
     med_props = np.array(medium_children_counts) / float(sum(medium_children_counts))
     class_sublayer_sizes = partition(n_hidden_units, med_props)
 
     # Adjust number of hidden units so that we nicely partition layer in terms of medium classes
+    # sum(class_sublayer_sizes) should already be equal to the n_hidden_units actually
+    # just making sure I guess ~?
     n_hidden_units = sum(class_sublayer_sizes)
 
     medium_layer = keras.layers.Dense(n_hidden_units,
@@ -490,4 +506,3 @@ def create_hierarchical_baseline_model(n_input_hops, n_filters, n_hidden_units, 
                                 name="y_fine")(dense1)
 
     return [tfr_input], [y_coarse, y_medium, y_fine]
-

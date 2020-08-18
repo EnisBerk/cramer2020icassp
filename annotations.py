@@ -174,10 +174,13 @@ def load_taxonomy_codes(filepath):
 
 
 TAXONOMY_PATH = os.path.join(os.path.dirname(__file__),
-                             '..',
+                             '.',
                              'resources',
                              'taxonomy.yaml')
-FILTER_PATH = os.path.join(os.path.dirname(__file__), 'filter.yaml')
+FILTER_PATH = os.path.join(os.path.dirname(__file__),
+                            '.',
+                            'resources',
+                            'filter.yaml')
 
 with open(TAXONOMY_PATH, 'r') as f:
     TAXONOMY = yaml.load(f)
