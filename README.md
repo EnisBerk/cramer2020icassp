@@ -22,6 +22,7 @@ Furthermore, on a task of coarse-grained classification, TaxoNet also outperform
 #### Setup
 
 To get started with our code:
+* requirements work with python3.6, nothing higher. 
 * Clone the repository: `git clone https://github.com/BirdVox/cramer2020icassp.git`
 * Enter the repository directory: `cd cramer2020icassp`
 * Install dependencies: `pip install -r requirements.txt`
