@@ -22,7 +22,7 @@ Furthermore, on a task of coarse-grained classification, TaxoNet also outperform
 #### Setup
 
 To get started with our code:
-* requirements work with python3.6, nothing higher. 
+* requirements work with python3.6, nothing higher.
 * Clone the repository: `git clone https://github.com/BirdVox/cramer2020icassp.git`
 * Enter the repository directory: `cd cramer2020icassp`
 * Install dependencies: `pip install -r requirements.txt`
@@ -37,3 +37,7 @@ Note that this code requires Python 3.6+.
 
 #### Running Code
 Relevant scripts have filenames starting with a number, indicating the order in which to run them. After editing `localmodule.py` to reflect your workspace, scripts can simply be run via `python <script_path>`.
+
+Edit `localmodule.py` , `WORKING_DIR` will be modified by code
+`python 00_create_splits.py`
+`python 01_augment-clips-hdf5.py [aug_type] [instanceID]` # augmentation options are noise,pitch,stretch
