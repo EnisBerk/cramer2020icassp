@@ -25,37 +25,43 @@ def get_augmentations():
     }
     return augmentations
 
+# !!! directories should end with /
+# because in some places str.replace used as Path.relative_to
+WORKING_DIR="scratchExp/"
+DATASET_DIR="resources/datasets/"
 
 def get_anafcc_dir():
-    return "/beegfs/jtc440/anafcc"
+    return DATASET_DIR+"BirdVox-ANAFCC/"
 
 
 def get_birdvox14sd_dir():
-    return "/beegfs/jtc440/birdvox-14sd"
+    return DATASET_DIR+"BirdVox-14SD/"
 
 
 def get_train_data_dir():
-    return "/beegfs/jtc440/birdvox-cls-train"
+    return WORKING_DIR+"birdvox-cls-train/"
 
 
 def get_train_dataset_name():
-    return "BirdVox-cls-train"
+    return WORKING_DIR+"BirdVox-cls-train/"
 
 
 def get_noise_data_dir():
-    return "/beegfs/jtc440/birdvox-dcase-20k"
+    return "/tank/data/birdAudioDetectionChallenge/BirdVox-DCASE-20k/"
 
 
 def get_valid_data_dir():
-    return "/beegfs/jtc440/birdvox-cls-valid"
+    return WORKING_DIR+"birdvox-cls-valid/"
 
+def get_aug_dataset_h5_dir():
+    return WORKING_DIR+"aud_dataset/"
 
 def get_valid_dataset_name():
-    return "BirdVox-cls-valid"
+    return WORKING_DIR+"BirdVox-cls-valid/"
 
 
 def get_test_data_dir():
-    return "/beegfs/jtc440/birdvox-cls-test"
+    return WORKING_DIR+"birdvox-cls-test/"
 
 
 def get_pcen_settings():
@@ -672,4 +678,3 @@ def get_class_weights(hdf5_dir, level, tfr_str='pcen', partial_labels=True):
 
     weights = {k: max_count / float(v) for k, v in class_counter.items()}
     return weights
-
