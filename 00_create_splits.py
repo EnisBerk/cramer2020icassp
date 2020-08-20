@@ -10,8 +10,24 @@ import localmodule
 
 
 def get_dataset_distribution(hdf5_dir):
+    """
+    Calculates distribution of each fine taxonomy per source.
+
+    Reads all h5 files from hdf5_dir and creates a Counter from keys and length of values.
+    Ignores if X in the taxonomy code.
+    taxonomy code starting with 0 and 2 is used as other.
+
+    Returns something like
+    {'CLO-SWTH': Counter({'1.3.2': 1192}),
+    'additional-v2': Counter({'1.3.1': 0,
+           'other': 0,
+           '1.2.1': 31,
+           '1.3.2': 0,
+           '1.4.2': 159}),}
+    """
     distr = {}
     for fname in os.listdir(hdf5_dir):
+#         print(fname)
         source, code = fname.split('_')[:2]
         if 'X' in code:
             continue
@@ -38,6 +54,20 @@ def JSD(P, Q):
     _M = 0.5 * (_P + _Q)
     return 0.5 * (kl_div(_P, _M) + kl_div(_Q, _M))
 
+
+# From the paper: (parentheses are mine)
+# we train and validate our models on ANAFCC and evaluate them on BirdVox-14SD.
+# ... Because the class distributions differ
+# between the two datasets, we create a training-validation split by formulating
+# the allocation of examples to the validation set as a knapsack problem [30]
+# treating individual data sources containing a particular fine-level class as items,
+# with weights corresponding to the number of examples contained within.
+# (So that same source in the ANAFCC dataset is not used in the training and validation at the same time)
+# We consider validation knapsack sizes between 15-30% of the total number of examples in ANAFCC,
+# and for each find the optimal validation knapsack with Google OR-Tools. Among these
+# candidate splits, we choose the split with the lowest average of Jensen-Shannon divergence
+# between the fine-level class distributions of the split subsets and BirdVox-14SD(testing dataset).
+#
 
 # Setup directories
 anafcc_dir = localmodule.get_anafcc_dir()
@@ -85,8 +115,12 @@ for target in targets:
 valid_candidates = list(set([tuple(x) for x in valid_candidates]))
 
 # Compute test set distribution
-keys = sorted(bv14sd_distr['BirdVox-300h'].keys())
-bv14sd_distr_arr = np.array([bv14sd_distr['BirdVox-300h'][k] for k in keys]).astype(float)
+bv14sd_distrKeys=list(bv14sd_distr.keys())
+assert len(bv14sd_distrKeys)==1
+bv14sd_distrDirName=bv14sd_distrKeys[0]
+
+keys = sorted(bv14sd_distr[bv14sd_distrDirName].keys())
+bv14sd_distr_arr = np.array([bv14sd_distr[bv14sd_distrDirName][k] for k in keys]).astype(float)
 bv14sd_distr_arr /= bv14sd_distr_arr.sum()
 
 # Find candidate split with minimum JS-divergence
