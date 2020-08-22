@@ -33,14 +33,18 @@ print("")
 
 
 # Create directory for augmented clips.
-original_dataset_h5_dir = os.path.join(data_dir, "hdf5", "original")
+original_dataset_h5_dir = os.path.join(data_dir, "original")
+
+# original_dataset_h5_dir = os.path.join(data_dir, "hdf5", "original")
 valid_data_dir = localmodule.get_valid_data_dir()
 valid_dataset_name = localmodule.get_valid_dataset_name()
 instanced_aug_str = "-".join([aug_str, instance_str])
-aug_dataset_h5_dir=localmodule.get_aug_dataset_h5_dir()
-aug_dataset_h5_dir = os.path.join(aug_dataset_h5_dir, "hdf5", instanced_aug_str)
-os.makedirs(aug_dataset_h5_dir, exist_ok=True)
 
+# aug_dataset_h5_dir=localmodule.get_aug_dataset_h5_dir()
+# aug_dataset_h5_dir = os.path.join(aug_dataset_h5_dir, instanced_aug_str)
+
+aug_dataset_h5_dir = os.path.join(data_dir, "hdf5", instanced_aug_str)
+os.makedirs(aug_dataset_h5_dir, exist_ok=True)
 
 # Create directory corresponding to the recording unit.
 in_h5_dir = original_dataset_h5_dir
@@ -123,6 +127,7 @@ def create_jams(clip_name, in_path, audio, sr):
 
 for fname in os.listdir(original_dataset_h5_dir):
     in_path = os.path.join(original_dataset_h5_dir, fname)
+    #TODO do I need os.path.basename(in_path)
     out_fname = os.path.basename(in_path).replace('original',
         aug_str + '-' + instance_str)
     out_path = os.path.join(aug_dataset_h5_dir, out_fname)
