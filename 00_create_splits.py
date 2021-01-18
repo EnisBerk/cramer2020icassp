@@ -112,7 +112,7 @@ for valid_idxs in valid_candidates:
 
     valid_distr_arr = np.array([valid_distr[k] for k in keys]).astype(float)
     valid_distr_arr /= valid_distr_arr.sum()
-    train_distr_arr = np.array([valid_distr[k] for k in keys]).astype(float)
+    train_distr_arr = np.array([train_distr[k] for k in keys]).astype(float)
     train_distr_arr /= train_distr_arr.sum()
 
     valid_jsd = JSD(bv14sd_distr_arr, valid_distr_arr)
